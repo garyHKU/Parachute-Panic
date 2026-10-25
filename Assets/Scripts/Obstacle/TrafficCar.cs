@@ -9,7 +9,6 @@ public class TrafficCar : Obstacle
     {
         var sr = GetComponent<SpriteRenderer>();
         sr.sprite = sprites[Random.Range(0, sprites.Length)];
-        GetComponent<BoxCollider2D>().size = sr.sprite.bounds.size;
     }
 
     public override void OnHitPlayer(PlayerCar player)
