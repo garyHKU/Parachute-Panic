@@ -11,6 +11,8 @@ public class RoadScroll : MonoBehaviour
 
     void Update()
     {
+
+        // Move the road down based on the player's speed
         transform.position += Vector3.down * PlayerCar.Speed * Time.deltaTime;
 
         if (transform.position.y <= -height)

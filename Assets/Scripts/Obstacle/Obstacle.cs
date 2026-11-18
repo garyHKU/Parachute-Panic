@@ -2,21 +2,29 @@ using UnityEngine;
 
 public abstract class Obstacle : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    // If a child class has a drive speed it can use this
+    protected virtual float DriveSpeed => 0f;
+
+    protected virtual void Update()
     {
-        
+        float relativeSpeed = PlayerCar.Speed - DriveSpeed;
+
+        // Move the obstacle down the screen based on the player's speed
+        transform.position += Vector3.down * relativeSpeed * Time.deltaTime;
+
+
+        // If the obstacle goes bellow the screen, destroy it
+        if (transform.position.y < -10f) { 
+            OnMissed();
+            Destroy(gameObject); 
+        };
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        // move the obstacle down the screen based on the player's speed
-        transform.position += Vector3.down * PlayerCar.Speed * Time.deltaTime;
-        if (transform.position.y < -10f) Destroy(gameObject);
-    }
-
-    // This method is called when the obstacle collides with the player
+    // This is for other scripts to implement
     public abstract void OnHitPlayer(PlayerCar player);
 
+    // This is for child classes to implement if they want to do something they are missed (like losing points)
+    protected virtual void OnMissed() {}
 }

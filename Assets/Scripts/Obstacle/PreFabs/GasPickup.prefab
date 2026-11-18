@@ -30,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.598, y: -5.497, z: 0}
-  m_LocalScale: {x: 0.4275, y: 0.4275, z: 0.4275}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -107,6 +107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FuelPickup
   amount: 100
+  catchPoints: 100
+  missPenalty: 50
 --- !u!61 &8085659676789676697
 BoxCollider2D:
   m_ObjectHideFlags: 0
