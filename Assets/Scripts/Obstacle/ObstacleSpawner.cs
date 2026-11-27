@@ -7,6 +7,7 @@ public class ObstacleSpawner : MonoBehaviour
 
     [Header("Traffic")]
     [SerializeField] private GameObject[] trafficPrefabs;
+    [SerializeField] private GameObject[] erraticPrefabs;
     [SerializeField] private float trafficGap = 4f;     // free space needed in the lane itself
 
     [Header("Fuel")]
@@ -31,7 +32,10 @@ public class ObstacleSpawner : MonoBehaviour
         bool lastCarMovedOn = lastTraffic == null || lastTraffic.position.y < SpawnY - TrafficSpacing;
         if (lastCarMovedOn)
         {
-            GameObject prefab = trafficPrefabs[Random.Range(0, trafficPrefabs.Length)];
+            // spawn either a traffic car or an erratic car based on the current wave's erratic chance
+            bool spawnErratic = Random.value < ProgressionManager.Instance.CurrentWave.erraticChance;
+            GameObject[] pool = spawnErratic ? erraticPrefabs : trafficPrefabs;
+            GameObject prefab = pool[Random.Range(0, pool.Length)];
             GameObject spawned = TrySpawn(prefab, TrafficCanSpawn);
             if (spawned != null) lastTraffic = spawned.transform;
         }
