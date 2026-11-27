@@ -15,8 +15,8 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
 
-        // reset the distance so that the score starts at 0
-        PlayerCar.Distance = 0f;
+        // reset the player car
+        PlayerCar.ResetDistance();
 
         // hide the game over panel and unpause the game
         gameOverPanel.SetActive(false);

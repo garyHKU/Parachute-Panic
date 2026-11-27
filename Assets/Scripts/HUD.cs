@@ -11,7 +11,7 @@ public class HUD : MonoBehaviour
     void Update()
     {
         // Update the HUD elements based on the player's current state
-        livesText.text = "Lives: " + player.lives;
-        fuelBar.value = player.fuel / player.fuelCapacity;
+        livesText.text = "Lives: " + player.Lives;
+        fuelBar.value = player.Fuel / player.FuelCapacity;
     }
 }

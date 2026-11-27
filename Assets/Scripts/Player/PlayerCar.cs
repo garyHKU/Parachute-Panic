@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerCar : MonoBehaviour
 {
-    public static float Speed;
-    public static float Distance;
+    public static float Speed { get; private set; }
+    public static float Distance { get; private set; }
 
     [Header("Speed")]
     [SerializeField] private float minSpeed = 5f;
@@ -16,9 +16,13 @@ public class PlayerCar : MonoBehaviour
     [SerializeField] private float roadEdgeMargin = 1f; // extra space to keep the car on the road
 
     [Header("Lives and fuel")]
-    public int lives = 3;
-    public float fuelCapacity = 100f;
-    public float fuel;
+    [SerializeField] private int lives = 3;
+    [SerializeField] private float fuelCapacity = 150f;
+
+    public int Lives => lives;
+    public float FuelCapacity => fuelCapacity;
+    public float Fuel { get; private set; }
+
     [SerializeField] private float fuelDrainPerSecond = 5f;
 
     [Header("Audio")]
@@ -26,65 +30,79 @@ public class PlayerCar : MonoBehaviour
 
     private SteerSprite steerSprite;
 
-    void Start()
+    private void Start()
     {
         Speed = minSpeed;
-        fuel = fuelCapacity;
+        Fuel = FuelCapacity;
         steerSprite = GetComponent<SteerSprite>();
     }
 
-    void Update()
+    private void Update()
     {
-        if (fuel <= 0f) return;
+        if (Fuel <= 0f) return;
+        float _verticalInput = Input.GetAxis("Vertical");
+        float _horizontalInput = Input.GetAxis("Horizontal");
 
-        // get inputs from the player
-        float verticalInput = Input.GetAxis("Vertical");
-        float horizontalInput = Input.GetAxis("Horizontal");
+        HandleSpeed(_verticalInput);
+        HandleSteering(_horizontalInput);
+        HandleFuel();
+    }
+
+    private void HandleSpeed(float verticalInput)
+    {
 
         // update speed and distance
         Speed += verticalInput * acceleration * Time.deltaTime;
         Speed = Mathf.Clamp(Speed, minSpeed, maxSpeed);
         Distance += Speed * Time.deltaTime;
+    }
 
+    private void HandleSteering(float horizontalInput)
+    {
         // steer faster at higher speeds
-        float speedFraction = Mathf.InverseLerp(minSpeed, maxSpeed, Speed);
-        float steering = Mathf.Lerp(minSpeedSteering, maxSpeedSteering, speedFraction);
-
+        float _speedFraction = Mathf.InverseLerp(minSpeed, maxSpeed, Speed);
+        float _steering = Mathf.Lerp(minSpeedSteering, maxSpeedSteering, _speedFraction);
         // move sideways and stay on the road
-        float leftEdge = Lanes.Instance.GetX(0) - roadEdgeMargin;
-        float rightEdge = Lanes.Instance.GetX(Lanes.Instance.Count - 1) + roadEdgeMargin;
-
-        Vector3 position = transform.position;
-        position.x += horizontalInput * steering * Time.deltaTime;
-        position.x = Mathf.Clamp(position.x, leftEdge, rightEdge);
-        transform.position = position;
-
+        float _leftEdge = Lanes.Instance.GetX(0) - roadEdgeMargin;
+        float _rightEdge = Lanes.Instance.GetX(Lanes.Instance.Count - 1) + roadEdgeMargin;
+        Vector3 _position = transform.position;
+        _position.x += horizontalInput * _steering * Time.deltaTime;
+        _position.x = Mathf.Clamp(_position.x, _leftEdge, _rightEdge);
+        transform.position = _position;
         steerSprite.Steer(horizontalInput);
+    }
 
+    private void HandleFuel()
+    {
         // drain fuel over time
-        fuel -= fuelDrainPerSecond * Time.deltaTime;
-        if (fuel <= 0f)
+        Fuel -= fuelDrainPerSecond * Time.deltaTime;
+        if (Fuel <= 0f)
         {
-            fuel = 0f;
+            Fuel = 0f;
             GameOver();
         }
     }
 
     public void AddFuel(float amount)
     {
-        fuel = Mathf.Min(fuel + amount, fuelCapacity);
+        Fuel = Mathf.Min(Fuel + amount, FuelCapacity);
     }
 
     public void LoseLife()
     {
         lives--;
-        if (lives <= 0) GameOver();
+        if (Lives <= 0) GameOver();
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         Obstacle obstacle = other.GetComponent<Obstacle>();
         if (obstacle != null) obstacle.OnHitPlayer(this);
+    }
+
+    public static void ResetDistance()
+    {
+        Distance = 0f;
     }
 
     private void GameOver()
