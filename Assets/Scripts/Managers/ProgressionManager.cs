@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using System.Collections;
 using TMPro;
@@ -17,8 +18,11 @@ public class Wave
 
 public class ProgressionManager : MonoBehaviour
 {
+    // ui related things
+    [Header("UI")]
     [SerializeField] private TMP_Text waveText;
     [SerializeField] private float showDuration = 2f;
+    [SerializeField] private Slider progressBar;
 
 
     public static ProgressionManager Instance { get; private set; }
@@ -39,7 +43,7 @@ public class ProgressionManager : MonoBehaviour
     void Update()
     {
         float distanceInWave = PlayerCar.Distance - waveStartDistance;
-
+        progressBar.value = distanceInWave / CurrentWave.length;
         if (distanceInWave >= CurrentWave.length)
             NextWave();
     }
