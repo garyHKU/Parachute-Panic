@@ -5,10 +5,8 @@ public class ObstacleSpawner : MonoBehaviour
 {
     [SerializeField] private float spawnMargin = 2f; // how far above the screen things spawn
 
-    // note for garon aka me: Damn I forgot all aobut the header in other scripts xD
     [Header("Traffic")]
     [SerializeField] private GameObject[] trafficPrefabs;
-    [SerializeField] private float trafficSpacing = 3f; // "minimum" screen distance between two spawns
     [SerializeField] private float trafficGap = 4f;     // free space needed in the lane itself
 
     [Header("Fuel")]
@@ -19,6 +17,8 @@ public class ObstacleSpawner : MonoBehaviour
     private Transform lastTraffic;
     private float nextFuelDistance;
 
+    private float TrafficSpacing => ProgressionManager.Instance.CurrentWave.trafficSpacing;
+
     private float SpawnY => Lanes.Instance.ScreenTop + spawnMargin;
 
     void Start()
@@ -28,7 +28,7 @@ public class ObstacleSpawner : MonoBehaviour
 
     void Update()
     {
-        bool lastCarMovedOn = lastTraffic == null || lastTraffic.position.y < SpawnY - trafficSpacing;
+        bool lastCarMovedOn = lastTraffic == null || lastTraffic.position.y < SpawnY - TrafficSpacing;
         if (lastCarMovedOn)
         {
             GameObject prefab = trafficPrefabs[Random.Range(0, trafficPrefabs.Length)];

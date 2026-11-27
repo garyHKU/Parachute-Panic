@@ -13,7 +13,7 @@ public class FuelPickup : Obstacle
         player.AddFuel(amount);
 
         // Add POINTS to the score (hopfully acts as falling parachute idea, giving points when caught)
-        ScoreManager.Instance.AddPoints(catchPoints);
+        ScoreManager.Instance.AddBonusPoints(catchPoints);
 
         // Destroy pickup
         Destroy(gameObject);
